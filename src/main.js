@@ -16,8 +16,7 @@ const houses = [];
 const { CHAT_ID, BOT_API } = process.env;
 
 const urls = [
-    'https://www.funda.nl/en/koop/amsterdam/beschikbaar/0-300000/40+woonopp/2+slaapkamers/1-dag/',
-    'https://www.funda.nl/en/koop/haarlem/beschikbaar/0-300000/40+woonopp/2+slaapkamers/1-dag/',
+    'https://www.funda.nl/koop/amsterdam/325000-650000/75+woonopp/2+slaapkamers/schuur-berging/3-dagen/bouwperiode-1991-2000/bouwperiode-2001-2010/bouwperiode-2011-2020/bouwperiode-na-2020/energielabel-a/energielabel-b/',
 ];
 
 const runTask = async () => {

@@ -16,6 +16,8 @@ jobs:
 
       - name: Running
         run: |
+          npm --version
+          node --version
           npm cache clean --force
           npm install
           npm run task

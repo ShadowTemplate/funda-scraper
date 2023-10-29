@@ -16,7 +16,8 @@ const houses = [];
 const { CHAT_ID, BOT_API } = process.env;
 
 const urls = [
-    'https://www.funda.nl/koop/amsterdam/325000-650000/75+woonopp/2+slaapkamers/schuur-berging/3-dagen/bouwperiode-1991-2000/bouwperiode-2001-2010/bouwperiode-2011-2020/bouwperiode-na-2020/energielabel-a/energielabel-b/',
+    'https://www.funda.nl/zoeken/huur?selected_area=%5B%22amsterdam%22%5D&price=%22800-1750%22&object_type=%5B%22apartment%22%5D&availability=%5B%22available%22%5D&bedrooms=%222-%22',
+    'https://www.funda.nl/zoeken/huur?selected_area=%5B%22amsterdam%22%5D&price=%22700-900%22&object_type=%5B%22apartment%22%5D&availability=%5B%22available%22%5D&bedrooms=%221-%22',
 ];
 
 const runTask = async () => {

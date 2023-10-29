@@ -37,46 +37,48 @@ const runTask = async () => {
         const date = (new Date()).toISOString().split('T')[0];
         houses.forEach(({
             path,
-            income,
-            residentsAge0to14,
-            residentsAge15to24,
-            residentsAge25to44,
-            residentsAge45to64,
-            residentsAge65AndOlder,
-            householdsWithChildren,
-            shareOfMorocco,
-            shareOfAntillesOrAruba,
-            shareOfSuriname,
-            shareOfTurkey,
-            neighbourhoodName,
-            municipalityName,
-            shareOfNonImmigrants,
-            residentsCount,
-            totalImmigrantsCount,
+            room,
+            // income,
+            // residentsAge0to14,
+            // residentsAge15to24,
+            // residentsAge25to44,
+            // residentsAge45to64,
+            // residentsAge65AndOlder,
+            // householdsWithChildren,
+            // shareOfMorocco,
+            // shareOfAntillesOrAruba,
+            // shareOfSuriname,
+            // shareOfTurkey,
+            // neighbourhoodName,
+            // municipalityName,
+            // shareOfNonImmigrants,
+            // residentsCount,
+            // totalImmigrantsCount,
         }) => {
-            let text = `New house on ${date}: [click here](${path})`;
+            let text = `New house on ${date}: [click here](${path}) (${room}).`;
 
-            if (income) {
-                let extraStuff = `
-residentsIncome: **${income}**
-neighbourhoodName: **${neighbourhoodName}**
-municipalityName: **${municipalityName}**
-residentsAge0to14: **${residentsAge0to14}**
-residentsAge15to24: **${residentsAge15to24}**
-residentsAge25to44: **${residentsAge25to44}**
-residentsAge45to64: **${residentsAge45to64}**
-residentsAge65AndOlder: **${residentsAge65AndOlder}**
-householdsWithChildren: **${householdsWithChildren}**
-residentsCount: **${residentsCount}**
-totalImmigrantsCount: **${totalImmigrantsCount}**
-shareOfNonImmigrants: **${shareOfNonImmigrants}**
-shareOfMorocco: **${shareOfMorocco}**
-shareOfAntillesOrAruba: **${shareOfAntillesOrAruba}**
-shareOfSuriname: **${shareOfSuriname}**
-shareOfTurkey: **${shareOfTurkey}**
-`;
-                text = `${text}\n${extraStuff}`;
-            }
+            // if (income) {
+            //     let extraStuff = `
+// residentsIncome: **${income}**
+// neighbourhoodName: **${neighbourhoodName}**
+// municipalityName: **${municipalityName}**
+// residentsAge0to14: **${residentsAge0to14}**
+// residentsAge15to24: **${residentsAge15to24}**
+// residentsAge25to44: **${residentsAge25to44}**
+// residentsAge45to64: **${residentsAge45to64}**
+// residentsAge65AndOlder: **${residentsAge65AndOlder}**
+// householdsWithChildren: **${householdsWithChildren}**
+// residentsCount: **${residentsCount}**
+// totalImmigrantsCount: **${totalImmigrantsCount}**
+// shareOfNonImmigrants: **${shareOfNonImmigrants}**
+// shareOfMorocco: **${shareOfMorocco}**
+// shareOfAntillesOrAruba: **${shareOfAntillesOrAruba}**
+// shareOfSuriname: **${shareOfSuriname}**
+// shareOfTurkey: **${shareOfTurkey}**
+// shareOfTurkey: **${shareOfTurkey}**
+// `;
+//                 text = `${text}\n${extraStuff}`;
+//             }
 
             nodeFetch(`https://api.telegram.org/bot${BOT_API}/sendMessage`, {
                 method: 'POST',
@@ -116,10 +118,13 @@ const runPuppeteer = async (url) => {
 
 
     console.log('parsing funda.nl data');
-    const result = dom.window.document.querySelectorAll('.search-result');
+    const result = dom.window.document.getElementsByClassName("border-light-2 mb-4 border-b pb-4")
     for (const element of result) {
         const urlPath = element?.querySelectorAll('a')?.[0]?.href;
-        const headerSubtitle = element?.querySelector('.search-result__header-subtitle');
+        if  (!urlPath) {  // workaround for fake results
+            continue
+        }
+        const headerSubtitle = element?.querySelector('.text-dark-1');
         const subtitleText = headerSubtitle?.innerHTML?.trim();
 
         let path = urlPath;
@@ -130,7 +135,8 @@ const runPuppeteer = async (url) => {
         path = path.replace('?navigateSource=resultlist', '');
         if (path && !pastResults.has(path) && !newResults.has(path)) {
             let extraDetails = {};
-            const zipCode = getZipCode(subtitleText || '');
+            // const zipCode = getZipCode(subtitleText || '');
+            const zipCode = null;
 
             if (zipCode) {
                 const neighbourhoodData = await getNeighbourhoodData(zipCode);
@@ -162,6 +168,18 @@ const runPuppeteer = async (url) => {
                         residentsCount,
                     };
                 }
+            }
+
+            if (url.includes("%22700-900%22")) {
+                extraDetails = {
+                    ...extraDetails,
+                    room: "single",
+                };
+            } else {
+                extraDetails = {
+                    ...extraDetails,
+                    room: "double",
+                };
             }
 
             newResults.add(path);
